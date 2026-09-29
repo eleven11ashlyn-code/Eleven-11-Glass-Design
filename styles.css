@@ -11,13 +11,17 @@ dialog{width:min(570px,calc(100vw - 32px));max-height:calc(100svh - 36px);paddin
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.dock-lens{will-change:auto}}@media(forced-colors:active){.dock,.dock.is-scrolled,.dock-lens{border:2px solid CanvasText;background:Canvas;color:CanvasText}.dock-item{color:CanvasText}.creative-highlight{color:CanvasText}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass{background:#f1f6fcf5}.service-panel{background:#244e96}.project-category,.project-action{background:#f0f5fc}.dock,.dock.is-scrolled{background:#e6edf8}.dock-lens{background:#ffffff0d}.footer{background:white}dialog::backdrop{background:#152a4be6}}
 
-/* Top bar: glass material appears only after scrolling. */
-.site-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.32),rgba(235,246,255,.16));border-bottom:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 7px 25px rgba(25,58,103,.07);backdrop-filter:blur(18px) saturate(1.65);-webkit-backdrop-filter:blur(18px) saturate(1.65);opacity:0;transition:opacity .28s ease}
+/* Detached floating top bar: glass appears only after scrolling. */
+.site-header{border-radius:0;transition:top .38s cubic-bezier(.2,.75,.2,1),left .38s cubic-bezier(.2,.75,.2,1),right .38s cubic-bezier(.2,.75,.2,1),padding .38s cubic-bezier(.2,.75,.2,1),border-radius .38s cubic-bezier(.2,.75,.2,1)}
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:linear-gradient(125deg,rgba(255,255,255,.38),rgba(235,246,255,.19));border:1px solid rgba(255,255,255,.72);box-shadow:inset 0 1px 1px rgba(255,255,255,.85),inset 0 -1px 1px rgba(183,210,235,.35),0 12px 35px rgba(25,58,103,.12);backdrop-filter:blur(18px) saturate(1.65);-webkit-backdrop-filter:blur(18px) saturate(1.65);opacity:0;transition:opacity .28s ease}
+.site-header.is-sticky{top:18px;left:max(24px,calc((100vw - 1100px)/2));right:max(24px,calc((100vw - 1100px)/2));padding:12px 24px;border-radius:48px}
 .site-header.is-sticky::before{opacity:1}
 .site-header.is-sticky .brand-logo{filter:drop-shadow(0 1px 2px rgba(255,255,255,.7))}
 .site-header.is-sticky .header-location{text-shadow:0 1px 3px rgba(255,255,255,.95)}
-@media(max-width:520px){html{scroll-padding-top:110px}}
-@media(prefers-reduced-motion:reduce){.site-header::before{transition:none}}
+@media(max-width:850px){.site-header.is-sticky{top:14px;left:20px;right:20px;padding:12px 20px;border-radius:38px}}
+@media(max-width:520px){html{scroll-padding-top:110px}.site-header.is-sticky{top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;padding:10px 14px;gap:10px;border-radius:32px}}
+@media(max-width:360px){.site-header.is-sticky .wordmark{width:125px}.site-header.is-sticky .header-cta{padding:10px 12px;gap:8px}}
+@media(prefers-reduced-motion:reduce){.site-header,.site-header::before{transition:none}}
 @media(prefers-reduced-transparency:reduce){.site-header.is-sticky::before{background:rgba(247,251,255,.96);backdrop-filter:none;-webkit-backdrop-filter:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.site-header.is-sticky::before{background:rgba(247,251,255,.9)}}
-@media(forced-colors:active){.site-header.is-sticky::before{background:Canvas;border-bottom:1px solid CanvasText;backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(forced-colors:active){.site-header.is-sticky::before{background:Canvas;border:1px solid CanvasText;backdrop-filter:none;-webkit-backdrop-filter:none}}
