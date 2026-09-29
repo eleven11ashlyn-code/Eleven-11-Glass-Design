@@ -19,3 +19,9 @@ Hero product visuals are AI-generated concepts, not client project claims.
 
 ChatGPT preview access restrictions do not travel with this ZIP.
 Configure access separately on your chosen host if you want a private site.
+
+STICKY NAVBAR UPDATE
+After leaving the hero section, the fixed navbar now has a fully transparent
+background with a subtle 8px glass blur and faint edge reflections.
+The original hero-state styling and all supplied slider/spring interactions
+are preserved. There is no white fill in the scrolled state.
