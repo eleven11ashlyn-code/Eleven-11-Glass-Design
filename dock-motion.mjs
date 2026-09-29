@@ -25,11 +25,11 @@ export function stepLiquidEdges(edges, target, width, dt, direction = 1) {
     if (direction > 0) {
       const previous = right.position;
       right = stepSpring(right, target + width / 2, step, 32, 0.84);
-      left = stepSpring(left, (previous + right.position) / 2 - width, step, 28, 0.86);
+      left = stepSpring(left, (previous + right.position) / 2 - width, step, 20, 0.84);
     } else {
       const previous = left.position;
       left = stepSpring(left, target - width / 2, step, 32, 0.84);
-      right = stepSpring(right, (previous + left.position) / 2 + width, step, 28, 0.86);
+      right = stepSpring(right, (previous + left.position) / 2 + width, step, 20, 0.84);
     }
   }
   return { left, right };
@@ -44,6 +44,7 @@ export function createLiquidDock(dock) {
   let centers = [], lensWidth = 0, activeIndex = 0, target = 0, direction = 1;
   let edges = { left: { position: 0, velocity: 0 }, right: { position: 0, velocity: 0 } };
   let press = { position: 0, velocity: 0 }, pressTarget = 0;
+  let dockSpring = { position: 0, velocity: 0 }, pastHero = null;
   let pointer = null, frame = 0, lastTime = 0, scrollFrame = 0, navigationLock = null, ignoreClickUntil = 0;
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const nearest = x => centers.reduce((best, center, index) => Math.abs(center - x) < Math.abs(centers[best] - x) ? index : best, 0);
@@ -63,13 +64,14 @@ export function createLiquidDock(dock) {
     const pressure = reduced.matches ? 0 : clamp(press.position, 0, 1.1);
     const stretch = Math.max(0.85, (edges.right.position - edges.left.position) / lensWidth);
     const scaleX = stretch * (1 + pressure * 0.035);
-    const scaleY = 1 - Math.min(Math.max(stretch - 1, 0), 2) * 0.08 + pressure * 0.075;
+    const scaleY = 1 - Math.min(Math.max(stretch - 1, 0), 2) * 0.10 + pressure * 0.075;
     lens.style.transform = `translate3d(${(center() - lensWidth / 2).toFixed(3)}px,${(-pressure * 2).toFixed(3)}px,0) scale(${scaleX.toFixed(4)},${scaleY.toFixed(4)})`;
     // Counter-scale the corner radii so the stretched glass keeps rounded ends.
     lens.style.setProperty('--lens-scale-x', scaleX.toFixed(4));
     lens.style.setProperty('--lens-scale-y', scaleY.toFixed(4));
     lens.style.setProperty('--lens-energy', (0.58 + pressure * 0.27 + energy * 0.15).toFixed(3));
     if (!pointer) lens.style.setProperty('--lens-light', `${clamp(30 + velocity / 65, 12, 87)}%`);
+    dock.style.setProperty('--dock-lift', `${dockSpring.position.toFixed(3)}px`);
   }
   function tick(now) {
     frame = 0;
@@ -77,14 +79,15 @@ export function createLiquidDock(dock) {
     lastTime = now;
     edges = stepLiquidEdges(edges, target, lensWidth, dt, direction);
     press = stepSpring(press, pressTarget, dt, 29, 0.82);
+    dockSpring = stepSpring(dockSpring, 0, dt, 19, 0.64);
     render();
-    if (pointer || !settled(edges.left, target - lensWidth / 2) || !settled(edges.right, target + lensWidth / 2) || !settled(press, pressTarget)) frame = requestAnimationFrame(tick);
-    else { rest(); press = { position: pressTarget, velocity: 0 }; lastTime = 0; render(); }
+    if (pointer || !settled(edges.left, target - lensWidth / 2) || !settled(edges.right, target + lensWidth / 2) || !settled(press, pressTarget) || !settled(dockSpring, 0)) frame = requestAnimationFrame(tick);
+    else { rest(); press = { position: pressTarget, velocity: 0 }; dockSpring = { position: 0, velocity: 0 }; lastTime = 0; render(); }
   }
   function animate() {
     if (reduced.matches) {
       if (frame) cancelAnimationFrame(frame);
-      frame = 0; lastTime = 0; rest(); press = { position: 0, velocity: 0 }; render();
+      frame = 0; lastTime = 0; rest(); press = { position: 0, velocity: 0 }; dockSpring = { position: 0, velocity: 0 }; render();
     } else if (!frame && !document.hidden) { lastTime = 0; frame = requestAnimationFrame(tick); }
   }
   function preview(index = -1) { links.forEach((link, i) => link.classList.toggle('is-preview', i === index)); }
@@ -96,8 +99,24 @@ export function createLiquidDock(dock) {
     });
     if (!pointer) { retarget(centers[index]); animate(); }
   }
+  function updateScrollGlass(allowSpring = true) {
+    const heroBottom = sections[0].getBoundingClientRect().bottom;
+    // A small return margin prevents repeated pulses at the hero boundary.
+    const next = pastHero ? heroBottom < 48 : heroBottom <= 0;
+    if (next === pastHero) return;
+    const leavingHero = pastHero === false && next;
+    pastHero = next;
+    dock.classList.toggle('is-scrolled', next);
+    if (leavingHero && allowSpring && !reduced.matches && !document.hidden) {
+      // An impulse preserves the current position if the motion is interrupted.
+      dockSpring.velocity = Math.max(-420, dockSpring.velocity - 360);
+      animate();
+    }
+  }
   function updateFromScroll() {
     scrollFrame = 0;
+    // Glass and the hero-exit spring also respond during a tab's smooth scroll.
+    updateScrollGlass();
     if (pointer) return;
     if (navigationLock && performance.now() < navigationLock.until) return;
     navigationLock = null;
@@ -130,7 +149,7 @@ export function createLiquidDock(dock) {
       target = remap(target);
       if (pointer) { pointer.x = remap(pointer.x); pointer.bounds = dock.getBoundingClientRect(); }
     } else { target = centers[activeIndex]; rest(); }
-    render(); animate();
+    updateScrollGlass(false); render(); animate();
   }
   function lightAt(event, bounds) {
     const x = event.clientX - bounds.left;
