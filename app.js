@@ -82,3 +82,20 @@ if (document.modelContext?.registerTool) {
   try { Promise.resolve(document.modelContext.registerTool(tool, { signal: lifecycle.signal })).catch(() => {}); } catch (_) { /* The regular interface remains available. */ }
   window.addEventListener('pagehide', () => lifecycle.abort(), { once: true });
 }
+
+
+// Preserve the original top-of-page appearance; reveal glass only on scroll.
+(() => {
+  const topbar = document.querySelector('.site-header');
+  if (!topbar) return;
+  let pending = false;
+  const syncTopbar = () => {
+    pending = false;
+    topbar.classList.toggle('is-sticky', window.scrollY > 16);
+  };
+  window.addEventListener('scroll', () => {
+    if (!pending) { pending = true; requestAnimationFrame(syncTopbar); }
+  }, { passive: true });
+  window.addEventListener('pageshow', syncTopbar);
+  syncTopbar();
+})();

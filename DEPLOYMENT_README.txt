@@ -19,3 +19,13 @@ Hero product visuals are AI-generated concepts, not client project claims.
 
 ChatGPT preview access restrictions do not travel with this ZIP.
 Configure access separately on your chosen host if you want a private site.
+
+STICKY LIQUID-GLASS TOP BAR
+The header containing the logo and Let's talk button remains at the top
+while scrolling. At the top of the page it keeps its original appearance.
+After scrolling 16px, it gains a transparent liquid-glass surface with
+background blur, a light tint and reflective edges. Returning to the top
+removes the glass effect. Section links account for the fixed header.
+
+The bottom navigation, including its appearance and spring interactions,
+is restored exactly to the supplied Eleven11_Deployment (4).zip version.
