@@ -3,12 +3,96 @@ import { createLiquidDock } from './dock-motion.mjs';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const services = {
-  brand: { title: ['A brand that', 'feels like you.'], description: 'Find your voice. Make your mark. Give every touchpoint a clear, confident identity that people remember.', tags: ['Brand strategy', 'Visual identity', 'Graphic design'], cta: 'Talk about your brand', interest: 'Brand & creative', icon: 'spark' },
-  web: { title: ['Your next chapter.', 'Beautifully built.'], description: 'Turn a first visit into a meaningful connection with a thoughtful website that is easy to explore and a pleasure to use.', tags: ['Website design', 'Development', 'eCommerce'], cta: 'Talk about your website', interest: 'Web experiences', icon: 'globe' },
-  social: { title: ['Show up.', 'Stand for something.'], description: 'Join the right conversations with useful content and a consistent voice. Help more people discover what makes your business different.', tags: ['Social strategy', 'Content planning', 'Search optimisation'], cta: 'Talk about your presence', interest: 'Social & SEO', icon: 'chat' },
-  growth: { title: ['Less guesswork.', 'More direction.'], description: 'Bring a clear strategy to every campaign. Reach the people who matter, learn from the response and make your next move with confidence.', tags: ['Google Ads', 'Meta campaigns', 'Measurement'], cta: 'Talk about your goals', interest: 'Performance marketing', icon: 'grid' },
-  film: { title: ['Make them pause.', 'Make them feel.'], description: 'Some stories need to be seen. Give yours a distinctive point of view through film, photography and content made for the moment.', tags: ['Brand films', 'Ad production', 'Social video'], cta: 'Talk about your story', interest: 'Film & content', icon: 'play' },
-  events: { title: ['Beyond the screen.', 'Into the moment.'], description: 'Bring people and ideas together. Shape an experience that lets your audience connect with your brand in a memorable, personal way.', tags: ['Event planning', 'Brand experiences', 'Creative direction'], cta: 'Talk about your event', interest: 'Events & experiences', icon: 'studio' }
+  "brand": {
+    "title": [
+      "Design the journey.",
+      "Define the details."
+    ],
+    "description": "Approve user flows, layouts, typography and interactions before implementation. Give AI a clear design system and acceptance criteria to work from.",
+    "tags": [
+      "User journeys",
+      "Design system",
+      "Interactive prototype"
+    ],
+    "cta": "Discuss design direction",
+    "interest": "Design direction",
+    "icon": "spark"
+  },
+  "web": {
+    "title": [
+      "Design-led websites.",
+      "Built with AI."
+    ],
+    "description": "Create brand sites and campaign experiences from approved designs. AI helps implement components and responsive layouts; people check content, accessibility, performance and forms.",
+    "tags": [
+      "Brand websites",
+      "Responsive UI",
+      "Content & forms"
+    ],
+    "cta": "Discuss website development",
+    "interest": "Website development",
+    "icon": "globe"
+  },
+  "social": {
+    "title": [
+      "Useful workflows.",
+      "Connected web apps."
+    ],
+    "description": "Build portals, booking tools and dashboards around real user tasks. AI helps with screens, logic and integrations; engineers review permissions, data handling and complete workflows.",
+    "tags": [
+      "Client portals",
+      "Dashboards",
+      "API integrations"
+    ],
+    "cta": "Discuss web app development",
+    "interest": "Web app development",
+    "icon": "chat"
+  },
+  "growth": {
+    "title": [
+      "Designed for touch.",
+      "Ready for real life."
+    ],
+    "description": "Create focused mobile experiences for booking, loyalty and services. AI assists implementation; the team validates device behaviour, connectivity, permissions and release readiness.",
+    "tags": [
+      "Mobile journeys",
+      "App interfaces",
+      "Device testing"
+    ],
+    "cta": "Discuss mobile development",
+    "interest": "Mobile app development",
+    "icon": "grid"
+  },
+  "film": {
+    "title": [
+      "Brief. Build. Review.",
+      "Then refine."
+    ],
+    "description": "Give the agent one scoped task with designs, project context and acceptance checks. Review its plan and code, run tests, inspect the preview and iterate before approving the change.",
+    "tags": [
+      "Scoped tasks",
+      "AI coding agents",
+      "Human review"
+    ],
+    "cta": "Discuss the agentic workflow",
+    "interest": "Agentic workflow",
+    "icon": "play"
+  },
+  "events": {
+    "title": [
+      "Speed with purpose.",
+      "Quality by design."
+    ],
+    "description": "Measure delivery time, rework, defects and total cost. Keep design approval, code review, workflow testing and a named release owner before expanding beyond the pilot.",
+    "tags": [
+      "Quality gates",
+      "Release checks",
+      "Measured outcomes"
+    ],
+    "cta": "Discuss quality & delivery",
+    "interest": "Quality & delivery",
+    "icon": "studio"
+  }
 };
 const serviceTabs = $$('.service-tab');
 function activateService(tab, focus = false) {
